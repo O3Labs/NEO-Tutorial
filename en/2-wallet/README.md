@@ -266,11 +266,12 @@ A full specification of the file format can be found here. (https://github.com/n
 The NEP6 file also supports watch only addresses. Watch only addresses do not contain any information related to the private key, which maybe useful if the account is stored seperately in a more secure location.
 
 ## Contract Account
-NEO also supports more sophisticated Account Types. In these cases the funds are not associated with a single user but stored in a smart contract. The contract would create special rules on what is required in order for funds to to be withdrawn from this account. The most common case of this type of account is a multi signature account. A multi signature account requires that N of X people provides signatures for the transaction in order to transfer funds. For example 2 of 3 of the account owners must sign in order for the funds to be withdrawn. 
+NEO also supports more sophisticated Account Types. In these cases the funds are not associated with a single user but stored in a smart contract. The contract would create special rules on what is required in order for funds to to be withdrawn from this account. The most common case of this type of account is a multi signature account. A multi signature account requires that M of N people provides signatures for the transaction in order to transfer funds. For example 2 of 3 of the account owners must sign in order for the funds to be withdrawn. 
 
 We can generate a simple contract for this account using NEO op codes
 
 Suppose we want to create a multisignature contract account for THREE different persons (public keys):
+Important to note that we need to sort public keys but its ECPoint(X,Y) in ascending order before the operation otherwise we will get a different scripthash which leads to different NEO address.
 
 ```
 //pubkey1
@@ -293,10 +294,7 @@ PUSH PUBKEY 1
 PUSH PUBKEY 2
 PUSH PUBKEY 3
 
-//33 bytes
-PUSH OPCODE 21
-
-//total number of people (3)
+//total number of public keys (3)
 PUSH OPCODE 53
 
 //CHECK MULTISIHG
